@@ -23,7 +23,8 @@
   - `fast` / `medium` / `slow` 프리셋
   - 최대 비트레이트 / VBV 버퍼 크기
   - 품질: `CRF 28`, 프로필: High@Level 4.0 고정
-  - 오디오: `fdkaac`가 있으면 HE-AAC v1 스테레오 `64k` 사용\n  - `fdkaac`가 없거나 인코딩에 실패하면 FFmpeg AAC-LC 스테레오 `120k`로 자동 대체
+  - 오디오: `fdkaac`가 있으면 HE-AAC v1 스테레오 `64k` 사용
+  - `fdkaac`가 없거나 인코딩에 실패하면 FFmpeg AAC-LC 스테레오 `120k`로 자동 대체
   - 오디오 게인: dB 단위, 기본 `0`
   - 다이내믹 노멀라이징: 필요할 때만 선택
 - 결과 파일: `<입력 파일명>.mp4`
@@ -38,7 +39,9 @@
 
 ## 실행
 
-FFmpeg가 없으면 다운로드 버튼으로 빌드를 내려받으므로 인터넷 연결과 프로그램 실행 경로의 쓰기 권한이 필요합니다.\n\n기본 프로필에서 HE-AAC 64 kbps를 사용하려면 `fdkaac`가 PATH에 있어야 합니다. Ubuntu 계열에서는 `sudo apt install fdkaac`로 설치할 수 있습니다. 없으면 기존 AAC-LC 120 kbps 방식으로 자동 대체됩니다.
+FFmpeg가 없으면 다운로드 버튼으로 빌드를 내려받으므로 인터넷 연결과 프로그램 실행 경로의 쓰기 권한이 필요합니다.
+
+기본 프로필에서 HE-AAC 64 kbps를 사용하려면 `fdkaac`가 PATH에 있어야 합니다. Ubuntu 계열에서는 `sudo apt install fdkaac`로 설치할 수 있습니다. 없으면 기존 AAC-LC 120 kbps 방식으로 자동 대체됩니다.
 
 ```bash
 dotnet run
