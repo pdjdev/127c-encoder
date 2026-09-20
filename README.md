@@ -23,7 +23,7 @@
   - `fast` / `medium` / `slow` 프리셋
   - 최대 비트레이트 / VBV 버퍼 크기
   - 품질: `CRF 28`, 프로필: High@Level 4.0 고정
-  - 오디오: AAC-LC 스테레오 `120k` 고정
+  - 오디오: `fdkaac`가 있으면 HE-AAC v1 스테레오 `64k` 사용\n  - `fdkaac`가 없거나 인코딩에 실패하면 FFmpeg AAC-LC 스테레오 `120k`로 자동 대체
   - 오디오 게인: dB 단위, 기본 `0`
   - 다이내믹 노멀라이징: 필요할 때만 선택
 - 결과 파일: `<입력 파일명>.mp4`
@@ -38,7 +38,7 @@
 
 ## 실행
 
-FFmpeg가 없으면 다운로드 버튼으로 빌드를 내려받으므로 인터넷 연결과 프로그램 실행 경로의 쓰기 권한이 필요합니다.
+FFmpeg가 없으면 다운로드 버튼으로 빌드를 내려받으므로 인터넷 연결과 프로그램 실행 경로의 쓰기 권한이 필요합니다.\n\n기본 프로필에서 HE-AAC 64 kbps를 사용하려면 `fdkaac`가 PATH에 있어야 합니다. Ubuntu 계열에서는 `sudo apt install fdkaac`로 설치할 수 있습니다. 없으면 기존 AAC-LC 120 kbps 방식으로 자동 대체됩니다.
 
 ```bash
 dotnet run
@@ -68,10 +68,19 @@ DOTNET_USE_POLLING_FILE_WATCHER=1 dotnet watch
 ## 기본 인코딩 파라미터
 
 ```bash
+# 1. 영상 인코딩
 ffmpeg -hide_banner -n -i input.mp4 \
-  -map 0:v:0 -map 0:a:0? \
+  -map 0:v:0 -an \
   -c:v libx264 -preset fast -tune animation -profile:v high -level:v 4.0 -crf 28 \
   -maxrate 2000k -bufsize 4000k -vf bwdif=mode=send_frame:deint=interlaced -pix_fmt yuv420p -fps_mode vfr \
-  -c:a aac -profile:a aac_low -b:a 120k -ac 2 -movflags +faststart \
+  video.mp4
+
+# 2. 오디오를 PCM(CAF)으로 파이프해 HE-AAC v1 64 kbps 인코딩
+ffmpeg -hide_banner -i input.mp4 -map 0:a:0 -vn -ac 2 -c:a pcm_s16le -f caf pipe:1 \
+  | fdkaac -p 5 -b 64 -S - -o audio.m4a
+
+# 3. 재인코딩 없이 MP4로 리먹싱
+ffmpeg -hide_banner -n -i video.mp4 -i audio.m4a \
+  -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart \
   -metadata encoder=127c-encoder output_encoded.mp4
 ```
