@@ -23,6 +23,8 @@ internal static class DefaultEncodingPreset
     public const string AudioBitrate = "120k";
     public const string AudioChannels = "2";
     public const string DefaultAudioGainDb = "0";
+    public const string FdkaacProfile = "5";
+    public const string FdkaacBitrateKbps = "64";
 
     public const string SavingVideoCrf = "29";
     public const string SavingVideoMaxBitrate = "900k";
